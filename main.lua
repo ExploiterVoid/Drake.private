@@ -1,21 +1,51 @@
-local function hookfunction3(func, newfunc)
-    local mt = getrawmetatable(game)
-    local namecall = mt.__namecall
-    setreadonly(mt, false)
-    mt.__namecall = newcclosure(function(self, ...)
-        local args = {...}
-        if getnamecallmethod() == "Invoke" and self == func then
-            return newfunc(...)
+
+
+local getinfo = getinfo or debug.getinfo
+local DEBUG = false
+local Hooked = {}
+
+local Detected, Kill
+
+setthreadidentity(3)
+
+for i, v in getgc(true) do
+    if typeof(v) == "table" then
+        local DetectFunc = rawget(v, "Detected")
+        local KillFunc = rawget(v, "Kill")
+        if typeof(DetectFunc) == "function" and not Detected then
+            Detected = DetectFunc
+            local Old; Old = hookfunction(Detected, function(Action, Info, NoCrash)
+                if Action ~= "_" then
+                    if DEBUG then
+                        warn(Adonis AntiCheat flagged\nMethod: {Action}\nInfo: {Info})
+                    end
+                end
+                return true
+            end)
+
+            table.insert(Hooked, Detected)
         end
-        return namecall(self, ...)
-    end)
-    setreadonly(mt, true)
+        if rawget(v, "Variables") and rawget(v, "Process") and typeof(KillFunc) == "function" and not Kill then
+            Kill = KillFunc
+            local Old; Old = hookfunction(Kill, function(Info)
+                if DEBUG then
+                    warn(Adonis AntiCheat tried to kill (fallback): {Info})
+                end
+            end)
+            table.insert(Hooked, Kill)
+        end
+    end
 end
-
--- Hook functions with thread level 3
-local hookfunction = hookfunction3 or hookfunction
-local newcclosure = newcclosure or function(f) return f end
-
+local Old; Old = hookfunction(getrenv().debug.info, newcclosure(function(...)
+    local LevelOrFunc, Info = ...
+    if Detected and LevelOrFunc == Detected then
+        if DEBUG then
+            warn(Adonis AntiCheat sanity check detected and broken)
+        end
+        return coroutine.yield(coroutine.running())
+    end
+    return Old(...)
+end))
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/kav"))()
 local Window = Library.CreateLib("Toprakware", "DarkTheme")
 local Tab = Window:NewTab("Ana Menu")
