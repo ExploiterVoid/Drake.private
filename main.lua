@@ -239,17 +239,6 @@ Section1:NewButton("Paid underground (leaked)", "Have fun destroying illegits ke
     end)
 end)
 
-Section1:NewButton("Anti viewer", "YOU HAVE TO USE AT TRYOUTS OR AS PEOPLE USE ANTIAIM", function()
-    hookfunction(game.Players.LocalPlayer.IsInGroup, function() return true end)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Invooker1/Hub/main/DH-Skin-Changer.lua", true))()
-end)
-
-
-Section1:NewButton("Anti viewer", "YOU HAVE TO USE AT TRYOUTS OR AS PEOPLE USE ANTIAIM", function()
-    hookfunction(game.Players.LocalPlayer.IsInGroup, function() return true end)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Invooker1/Hub/main/DH-Skin-Changer.lua", true))()
-end)
-
 Section1:NewButton("Prime Resolver", "Doesnt work on fatality and other paids, no trouble because they are detected. (untested)", function()
     local RunService = game:GetService("RunService")
 
